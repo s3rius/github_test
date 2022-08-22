@@ -50,17 +50,17 @@ jobs:
     services:
 
       github_test-db:
-        image: bitnami/mysql:8.0.28
+        image: bitnami/mysql:8.0.30
         env:
-          MYSQL_PASSWORD: github_test
-          MYSQL_USER: github_test
-          MYSQL_DATABASE: github_test
-          ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_ROOT_PASSWORD: "github_test"
+          MYSQL_ROOT_USER: "github_test"
+          MYSQL_DATABASE: "github_test"
+          MYSQL_AUTHENTICATION_PLUGIN: "mysql_native_password"
         options: >-
           --health-cmd="mysqladmin ping -u root"
           --health-interval=15s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=6
         ports:
         - 3306:3306
     steps:

@@ -1,0 +1,58 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+    image: github_test:${GITHUB_TEST_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GITHUB_TEST_HOST: 0.0.0.0
+      GITHUB_TEST_DB_HOST: github_test-db
+      GITHUB_TEST_DB_PORT: 3306
+      GITHUB_TEST_DB_USER: github_test
+      GITHUB_TEST_DB_PASS: github_test
+      GITHUB_TEST_DB_BASE: github_test
+
+  db:
+    image: bitnami/mysql:8.0.28
+    hostname: github_test-db
+    restart: always
+    environment:
+      MYSQL_ROOT_USER: "github_test"
+      MYSQL_ROOT_PASSWORD: "github_test"
+      MYSQL_DATABASE: "github_test"
+      MYSQL_AUTHENTICATION_PLUGIN: "mysql_native_password"
+    healthcheck:
+      test: mysqladmin ping -h localhost
+      interval: 10s
+      timeout: 5s
+      retries: 40
+    volumes:
+    - github_test-db-data:/bitnami/mysql/data
+
+  migrator:
+    image: github_test:${GITHUB_TEST_VERSION:-latest}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      GITHUB_TEST_DB_HOST: github_test-db
+      GITHUB_TEST_DB_PORT: 3306
+      GITHUB_TEST_DB_USER: github_test
+      GITHUB_TEST_DB_PASS: github_test
+      GITHUB_TEST_DB_BASE: github_test
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+
+volumes:
+  github_test-db-data:
+    name: github_test-db-data

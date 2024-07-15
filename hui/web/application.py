@@ -8,6 +8,7 @@ from sentry_sdk.integrations.fastapi import FastApiIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
 from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
 
+from hui.log import configure_logging
 from hui.settings import settings
 from hui.web.api.router import api_router
 from hui.web.lifespan import lifespan_setup
@@ -21,6 +22,7 @@ def get_app() -> FastAPI:
 
     :return: application.
     """
+    configure_logging()
     if settings.sentry_dsn:
         # Enables sentry integration.
         sentry_sdk.init(

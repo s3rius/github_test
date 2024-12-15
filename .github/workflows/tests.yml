@@ -21,7 +21,7 @@ jobs:
         run: Compress-Archive -LiteralPath "hui\__main__.py" -DestinationPath "target.zip"
       - name: Test unzip (windows)
         if: ${{ 'windows-latest' == matrix.platform }}
-        run: Expand-Archive -Path "target.zip" -DestinationPath "dest" -WhatIf
+        run: Expand-Archive -Path "target.zip" -DestinationPath "." -WhatIf
       - name: run ls
         shell: bash
         run: ls -la

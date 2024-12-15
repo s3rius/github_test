@@ -5,9 +5,20 @@ on: push
 jobs:
   pytest:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        platform:
+          - windows-latest
+          - ubuntu-latest
+          - macOS-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Test zipping
+      - name: Test zipping (based systems)
+        if: ${{ 'windows-latest' != matrix.platform }}
+        shell: bash
+        run: zip -j target.zip hui/__main__.py
+      - name: Test zipping (windows)
+        if: ${{ 'windows-latest' == matrix.platform }}
         shell: bash
         run: zip -j target.zip hui/__main__.py
       - name: run ls

@@ -4,7 +4,7 @@ on: push
 
 jobs:
   pytest:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
         platform:
@@ -15,12 +15,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Test zipping (based systems)
         if: ${{ 'windows-latest' != matrix.platform }}
-        shell: bash
         run: zip -j target.zip hui/__main__.py
       - name: Test zipping (windows)
         if: ${{ 'windows-latest' == matrix.platform }}
-        shell: bash
-        run: zip -j target.zip hui/__main__.py
+        run: Compress-Archive -LiteralPath "hui\__main__.py" -DestinationPath "target.zip"
+      - name: Test unzip (windows)
+        if: ${{ 'windows-latest' == matrix.platform }}
+        run: Expand-Archive -Path "target.zip" -DestinationPath "dest" -WhatIf
       - name: run ls
         shell: bash
         run: ls -la

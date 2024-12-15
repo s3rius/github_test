@@ -24,7 +24,7 @@ jobs:
         run: Compress-Archive -LiteralPath "hui\__main__.py" -DestinationPath "target.zip"
       - name: Test unzip (windows)
         if: ${{ 'windows-latest' == matrix.platform }}
-        run: Expand-Archive -Path "target.zip" -DestinationPath "." -WhatIf
+        run: '[System.IO.Compression.ZipFile]::OpenRead("target.zip").Entries | ForEach-Object { $_.FullName }'
       - name: run ls
         shell: bash
         run: ls -la

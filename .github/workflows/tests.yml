@@ -16,6 +16,9 @@ jobs:
       - name: Test zipping (based systems)
         if: ${{ 'windows-latest' != matrix.platform }}
         run: zip -j target.zip hui/__main__.py
+      - name: Test unzipping (based systems)
+        if: ${{ 'windows-latest' != matrix.platform }}
+        run: zip -sf target.zip
       - name: Test zipping (windows)
         if: ${{ 'windows-latest' == matrix.platform }}
         run: Compress-Archive -LiteralPath "hui\__main__.py" -DestinationPath "target.zip"
